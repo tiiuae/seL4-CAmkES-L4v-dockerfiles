@@ -157,11 +157,11 @@ if [ "$MAKE_CACHES" = "yes" ] ; then
 fi
 
 if [ "$DESKTOP_MACHINE" = "no" ] ; then
-    # Set up locales. en_AU chosen because we're in Australia.
-    echo 'en_AU.UTF-8 UTF-8' | as_root tee /etc/locale.gen > /dev/null
+    # Set up locales. Default to en_US.
+    echo 'en_US.UTF-8 UTF-8' | as_root tee /etc/locale.gen > /dev/null
     as_root dpkg-reconfigure --frontend=noninteractive locales
-    echo "LANG=en_AU.UTF-8" | as_root tee -a /etc/default/locale > /dev/null
-    echo "export LANG=en_AU.UTF-8" >> "$HOME/.bashrc"
+    echo "LANG=en_US.UTF-8" | as_root tee -a /etc/default/locale > /dev/null
+    echo "export LANG=en_US.UTF-8" >> "$HOME/.bashrc"
 fi
 
 # If we have been using Debian Snapshot, then we need to switch
