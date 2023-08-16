@@ -64,7 +64,7 @@ EXTRA_DOCKER_IS_NOT_PODMAN_RUN_ARGS := $(shell $(IF_DOCKER_IS_NOT_PODMAN) \
 # use the appropriate sub{u,g}id mappings rather than end up using UID 0 in the
 # container
 EXTRA_DOCKER_IS_PODMAN_RUN_ARGS     := $(shell $(IF_DOCKER_IS_PODMAN) \
-    "--userns=keep-id" \
+    "--userns=keep-id --pids-limit=-1" \
 )
 # And we'll jam them into one variable to reduce noise in `docker run` lines
 EXTRA_DOCKER_RUN_ARGS   := $(EXTRA_DOCKER_IS_NOT_PODMAN_RUN_ARGS) \
