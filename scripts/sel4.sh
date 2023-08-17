@@ -162,6 +162,21 @@ if [ "$DESKTOP_MACHINE" = "no" ] ; then
     as_root dpkg-reconfigure --frontend=noninteractive locales
     echo "LANG=en_US.UTF-8" | as_root tee -a /etc/default/locale > /dev/null
     echo "export LANG=en_US.UTF-8" >> "$HOME/.bashrc"
+
+    # Setup default keyboard layout just in case.
+    as_root apt-get install -y --no-install-recommends keyboard-configuration
+    printf '%s\n' \
+        "# KEYBOARD CONFIGURATION FILE" \
+        "# Consult the keyboard(5) manual page." \
+        "" \
+        "XKBMODEL=\"pc105\"" \
+        "XKBLAYOUT=\"fi\"" \
+        "XKBVARIANT=\"\"" \
+        "XKBOPTIONS=\"\"" \
+        "" \
+        "BACKSPACE=\"guess\"" | as_root tee /etc/default/keyboard > /dev/null
+    as_root dpkg-reconfigure --frontend=noninteractive keyboard-configuration
+
 fi
 
 # If we have been using Debian Snapshot, then we need to switch
