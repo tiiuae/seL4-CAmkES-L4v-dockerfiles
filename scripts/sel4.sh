@@ -25,6 +25,12 @@ test -d "$DIR" || DIR=$PWD
 # tmp space for building
 : "${TEMP_DIR:=/tmp}"
 
+# Default locale/language config if not set elsewhere
+: "${DEFAULT_LOCALE:='en_US.UTF-8 UTF-8'}"
+: "${DEFAULT_LANG:='en_US.UTF-8'}"
+: "${DEFAULT_LANGUAGE:='en_US:en:C'}"
+: "${DEFAULT_KBLAYOUT:='fi'}"
+
 # Add additional architectures for cross-compiled libraries.
 # Install the tools required to compile seL4.
 as_root apt-get update -q
@@ -157,11 +163,16 @@ if [ "$MAKE_CACHES" = "yes" ] ; then
 fi
 
 if [ "$DESKTOP_MACHINE" = "no" ] ; then
-    # Set up locales. Default to en_US.
-    echo 'en_US.UTF-8 UTF-8' | as_root tee /etc/locale.gen > /dev/null
+
+    # Set up locale/language config
+    printf '%s' "$DEFAULT_LOCALE" | as_root tee /etc/locale.gen > /dev/null
+    printf 'LANG=%s' "$DEFAULT_LANG" | as_root tee /etc/default/locale > /dev/null
+    printf 'LANGUAGE=%s' "$DEFAULT_LANGUAGE" | as_root tee -a /etc/default/locale > /dev/null
     as_root dpkg-reconfigure --frontend=noninteractive locales
-    echo "LANG=en_US.UTF-8" | as_root tee -a /etc/default/locale > /dev/null
-    echo "export LANG=en_US.UTF-8" >> "$HOME/.bashrc"
+    as_root locale-gen
+    as_root update-locale LANG="$DEFAULT_LANG"
+    printf 'export LANG=%s' "$DEFAULT_LANG" >> "$HOME/.bashrc"
+    printf 'export LANGUAGE=%s' "$DEFAULT_LANGUAGE" >> "$HOME/.bashrc"
 
     # Setup default keyboard layout just in case.
     as_root apt-get install -y --no-install-recommends keyboard-configuration
@@ -170,7 +181,7 @@ if [ "$DESKTOP_MACHINE" = "no" ] ; then
         "# Consult the keyboard(5) manual page." \
         "" \
         "XKBMODEL=\"pc105\"" \
-        "XKBLAYOUT=\"fi\"" \
+        "XKBLAYOUT=\"$DEFAULT_KBLAYOUT\"" \
         "XKBVARIANT=\"\"" \
         "XKBOPTIONS=\"\"" \
         "" \
