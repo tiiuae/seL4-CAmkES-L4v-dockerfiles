@@ -20,4 +20,16 @@ RUN apt-get update -q \
     && apt-get install -y --no-install-recommends \
         # Add more dependencies here
         cowsay \
-        sudo
+        sudo \
+        emacs \
+        nano \
+        strace \
+        unzip \
+        screen \
+        tmux \
+        qemu \
+        qemu-system-arm \
+        qemu-system-common \
+        qemu-system-misc \
+        qemu-system-x86 \
+        qemu-utils
