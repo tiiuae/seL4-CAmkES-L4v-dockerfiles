@@ -47,7 +47,7 @@ EOF
     # removed by possibly_toggle_apt_snapshot when we are using the snapshot.
     as_root tee -a /etc/apt/apt.conf.d/80snapshot << EOF
 # Acquire::Retries "5";
-# Acquire::http::Dl-Limit "1000";
+# Acquire::http::Dl-Limit "5000";
 # Acquire::Check-Valid-Until false;
 EOF
 
