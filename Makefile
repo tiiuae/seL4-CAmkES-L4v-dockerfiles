@@ -70,6 +70,13 @@ EXTRA_DOCKER_IS_PODMAN_RUN_ARGS     := $(shell $(IF_DOCKER_IS_PODMAN) \
 EXTRA_DOCKER_RUN_ARGS   := $(EXTRA_DOCKER_IS_NOT_PODMAN_RUN_ARGS) \
                            $(EXTRA_DOCKER_IS_PODMAN_RUN_ARGS)
 
+# NOTE: these mounts don't work with SELinux enabled systems without workarounds.
+# Mount .gitconfig to the container if it exists
+EXTRA_DOCKER_RUN_ARGS += $(shell test -e $$HOME/.gitconfig && echo " -v $$HOME/.gitconfig:/home/$(shell whoami)/.gitconfig:ro")
+
+# Mount SSH agent to the container if it is running
+EXTRA_DOCKER_RUN_ARGS += $(shell test -e $$SSH_AUTH_SOCK && echo " -v $$(realpath $$SSH_AUTH_SOCK):/ssh-agent:ro -e SSH_AUTH_SOCK=/ssh-agent")
+
 ###########################
 # For 'prebuilt' images, the idea is that for things that take a long
 # time to build, and don't change very much, we should build them
